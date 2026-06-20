@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pg模拟器 · 简明指南与访问提示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f4f6f9;
+            color: #1e2a3a;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 深色头图 - 杂志横幅感 */
+        .hero {
+            background: linear-gradient(135deg, #0b1a2e 0%, #1b2f47 60%, #2a4058 100%);
+            color: #eef4fc;
+            padding: 80px 24px 70px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle at 30% 40%, rgba(60, 140, 200, 0.10) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .kicker {
+            font-size: 1.1rem;
+            opacity: 0.75;
+            max-width: 640px;
+            margin: 0 auto 8px;
+            position: relative;
+            z-index: 1;
+            font-weight: 350;
+        }
+
+        .hero .kicker a {
+            color: #9ac7ff;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: color 0.2s;
+        }
+
+        .hero .kicker a:hover {
+            color: #c2dfff;
+        }
+
+        .hero .meta-line {
+            margin-top: 28px;
+            font-size: 0.85rem;
+            opacity: 0.6;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 浅色正文区 */
+        .content-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+
+        /* 卡片式模块 */
+        .card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px 36px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9edf3;
+            transition: box-shadow 0.2s, transform 0.15s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 28px rgba(0, 20, 50, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 18px;
+            color: #142535;
+            border-left: 4px solid #3670b3;
+            padding-left: 16px;
+        }
+
+        .card p {
+            margin-bottom: 16px;
+            color: #2a3a4e;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .card strong {
+            color: #1e3b5c;
+            font-weight: 600;
+        }
+
+        .highlight-link {
+            color: #1a5a9e;
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1.5px solid rgba(26, 90, 158, 0.3);
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .highlight-link:hover {
+            color: #0c3b6e;
+            border-bottom-color: #1a5a9e;
+        }
+
+        /* 紧凑提醒列表 */
+        .tip-list {
+            background: #f0f4fc;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-top: 8px;
+            border-left: 4px solid #3670b3;
+        }
+
+        .tip-list li {
+            list-style: none;
+            padding: 8px 0 8px 28px;
+            position: relative;
+            font-size: 0.98rem;
+            color: #1d3144;
+        }
+
+        .tip-list li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: #3670b3;
+            font-weight: 700;
+        }
+
+        .tip-list li + li {
+            border-top: 1px solid #dde3ed;
+        }
+
+        /* FAQ 摘要——紧凑小模块 */
+        .faq-mini {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px 32px;
+            border: 1px solid #e9edf3;
+            margin: 32px 0 12px;
+        }
+
+        .faq-mini h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #142535;
+        }
+
+        .faq-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-q {
+            font-weight: 600;
+            color: #1a3f64;
+            font-size: 0.98rem;
+        }
+
+        .faq-a {
+            color: #374c61;
+            font-size: 0.95rem;
+            padding-left: 4px;
+        }
+
+        .faq-a a {
+            color: #1a5a9e;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .faq-a a:hover {
+            color: #0c3b6e;
+        }
+
+        /* 页尾访问提示——干净 */
+        .footer-access {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #d9e0ea;
+            text-align: center;
+            font-size: 0.98rem;
+            color: #455a70;
+        }
+
+        .footer-access a {
+            color: #1a5a9e;
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1.5px solid rgba(26, 90, 158, 0.3);
+            transition: border-color 0.2s;
+        }
+
+        .footer-access a:hover {
+            border-bottom-color: #1a5a9e;
+        }
+
+        .footer-access .emoji-bullet {
+            margin: 0 6px;
+            opacity: 0.35;
+        }
+
+        /* 响应式 */
+        @media (max-width: 720px) {
+            .hero {
+                padding: 56px 20px 50px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero .kicker {
+                font-size: 1rem;
+            }
+            .card {
+                padding: 24px 20px;
+            }
+            .card h2 {
+                font-size: 1.25rem;
+            }
+            .content-wrap {
+                padding: 28px 16px 48px;
+            }
+            .tip-list {
+                padding: 18px 20px;
+            }
+            .faq-mini {
+                padding: 20px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.65rem;
+            }
+            .card-grid {
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 深色头图 -->
+<section class="hero">
+    <h1>pg模拟器 · 简明指南</h1>
+    <div class="kicker">
+        专为需要快速上手与稳定模拟的用户编写 —— 从环境说明到访问提示，一文覆盖。
+        <a href="https://zho-pg-simulator.com">pg模拟器</a> 提供持续维护的实用镜像。
+    </div>
+    <div class="meta-line">杂志专题 · 聚焦效率与可靠性</div>
+</section>
+
+<!-- 正文区 -->
+<div class="content-wrap">
+
+    <div class="card-grid">
+
+        <!-- 第一段：背景说明 + 工具定位 -->
+        <div class="card">
+            <h2>背景与定位</h2>
+            <p>
+                当前各类 PostgreSQL 模拟环境日益复杂，版本碎片化、配置门槛高、文档分散等问题常让开发者与运维人员耗费额外精力。<strong>pg模拟器</strong> 的核心理念是提供一个开箱即用的轻量级仿真层，在不修改上游代码的前提下，快速复现核心数据库行为。它并非完整数据库发行版，而是一套面向测试、教学与原型验证的专用工具集。
+            </p>
+            <p>
+                基于此定位，站点围绕“快速部署 + 可预期输出”组织资源，所有示例与配置均经过实测，减少试错成本。无论你是初次接触数据库模拟，还是需要为 CI 环境搭建沙箱，都能在这里找到经过梳理的参考路径。
+            </p>
+        </div>
+
+        <!-- 第二段：简明介绍 —— 实际使用场景 + 注意事项 -->
+        <div class="card">
+            <h2>场景与操作要点</h2>
+            <p>
+                典型使用场景包括：单元测试中模拟特定版本的 PG 行为、离线开发环境下验证 SQL 兼容性、教学演示时快速展示执行计划差异。在这些场景下，<strong>pg模拟器</strong> 通过精简配置和预置参数模板，将启动时间压缩至秒级，同时保留必要的日志与诊断接口。
+            </p>
+            <p>
+                需要注意，模拟环境与生产集群之间存在若干差异，例如并发控制粒度、部分扩展支持、以及系统函数的行为边界。站点在每一份指南中都标注了已知偏差，建议在集成测试前对照官方文档进行复核。对于绝大多数常规查询与 DDL 操作，模拟器已提供充分覆盖。
+            </p>
+            <!-- 紧凑提醒列表 -->
+            <div class="tip-list">
+                <ul>
+                    <li>首次使用前请确认本地端口 5432 未被占用，或通过配置文件修改监听地址。</li>
+                    <li>推荐搭配 Docker 运行以获得环境隔离，镜像标签与 <a href="https://zho-pg-simulator.com" class="highlight-link">pg模拟器</a> 版本号严格对应。</li>
+                    <li>模拟器默认关闭自动清理与统计采集，测试结束后建议手动执行 VACUUM 以重置状态。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 第三段：进一步阐述 —— 稳定性、社区与文档习惯 -->
+        <div class="card">
+            <h2>稳定性与参考资源</h2>
+            <p>
+                自发布以来，<strong>pg模拟器</strong> 保持了月度更新节奏，重点修复兼容性边界问题并补充新的 SQL 语法支持。每次更新均附带变更日志与回退方案，用户可根据自身场景选择冻结版本或滚动升级。站点内置了搜索功能与分类标签，便于快速定位特定 PostgreSQL 版本的模拟说明。
+            </p>
+            <p>
+                除了基础操作指南，还包含一份 <em>常见查询模式速查表</em> 和 <em>模拟器边界测试案例集</em>。这些材料均基于社区反馈整理，并定期进行可复现性验证。如果你在某个特殊场景下发现行为不一致，可通过站点反馈通道提交最小复现用例，维护团队通常会在两个工作日内给出分析与调整建议。
+            </p>
+        </div>
+
+    </div><!-- card-grid end -->
+
+    <!-- FAQ 摘要模块 -->
+    <div class="faq-mini">
+        <h3>FAQ 摘要 · 快速澄清</h3>
+        <div class="faq-item">
+            <span class="faq-q">Q: 模拟器能否直接用于生产环境的数据迁移预演？</span>
+            <span class="faq-a">A: 可以用于初步语法验证与逻辑检查，但涉及锁机制、序列化隔离级别等场景时仍需以目标 PG 集群为准。建议将模拟器作为第一道筛选层，详细差异列表见站点对比页面。</span>
+        </div>
+        <div class="faq-item">
+            <span class="faq-q">Q: 如何获取与本地 PostgreSQL 版本相匹配的模拟器发行包？</span>
+            <span class="faq-a">A: 访问 <a href="https://zho-pg-simulator.com">pg模拟器</a> 主站，在“版本矩阵”区域选择你的 PG 主版本号，即可下载对应捆绑包或 Docker 镜像。</span>
+        </div>
+        <div class="faq-item">
+            <span class="faq-q">Q: 模拟器日志文件位置与轮替策略是怎样的？</span>
+            <span class="faq-a">A: 默认日志输出至 <code>./pg_sim_log/</code> 目录，按日期切割，保留最近 14 天记录。可通过环境变量 <code>SIM_LOG_RETENTION</code> 调整保留天数。</span>
+        </div>
+    </div>
+
+    <!-- 页尾访问提示 -->
+    <div class="footer-access">
+        <span>更完整的配置示例、进阶调优建议与已知问题清单，均在主站持续更新。</span>
+        <br>
+        <a href="https://zho-pg-simulator.com">pg模拟器</a>
+        <span class="emoji-bullet">·</span>
+        <span>简洁 · 可靠 · 专注模拟</span>
+    </div>
+
+</div>
+
+</body>
+</html>
