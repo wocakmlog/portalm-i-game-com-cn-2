@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pg模拟器 · 日常查询与对照手册</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f2f5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1f1f2e;
+      line-height: 1.7;
+      padding: 2rem 1.2rem;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* hero 微段落 */
+    .hero-note {
+      background: #ffffffdb;
+      backdrop-filter: blur(2px);
+      padding: 2.2rem 2rem 1.8rem;
+      border-radius: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e9ebf0;
+      margin-bottom: 2.2rem;
+      text-align: center;
+    }
+
+    .hero-note h1 {
+      font-size: 2.1rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: #1f2937;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-note .sub {
+      font-size: 1.1rem;
+      color: #4b5563;
+      max-width: 600px;
+      margin: 0.5rem auto 0;
+    }
+
+    .hero-note .opening-line {
+      font-size: 1.4rem;
+      font-weight: 380;
+      color: #2d3b4e;
+      border-left: 3px solid #9aa9b9;
+      padding-left: 1rem;
+      display: inline-block;
+      margin-top: 0.3rem;
+      text-align: left;
+    }
+
+    /* 卡片通用 */
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 2rem 2rem 2.2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02), 0 0 0 1px #e6e8ed inset;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 0 0 1px #d0d4dd inset;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 480;
+      letter-spacing: -0.01em;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #eceef1;
+      padding-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 450;
+      color: #2f3a4b;
+      margin: 1.1rem 0 0.4rem;
+    }
+
+    .card p {
+      margin-bottom: 1rem;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 特点列表 (无图标, 干净条目) */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 0.65rem 0 0.65rem 1.6rem;
+      position: relative;
+      border-bottom: 1px solid #f1f3f6;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li::before {
+      content: "›";
+      position: absolute;
+      left: 0.2rem;
+      color: #6f7d91;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+
+    /* 场景双列 */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-top: 0.2rem;
+    }
+
+    .scenario-item {
+      background: #f8f9fc;
+      padding: 1rem 1.2rem;
+      border-radius: 18px;
+      border: 1px solid #e7eaf0;
+    }
+
+    .scenario-item strong {
+      display: block;
+      font-weight: 500;
+      color: #1e2a3a;
+      margin-bottom: 0.2rem;
+    }
+
+    .scenario-item span {
+      font-size: 0.95rem;
+      color: #3f4b5a;
+    }
+
+    /* 提示 / FAQ 摘要 */
+    .tip-block {
+      background: #f6f8fb;
+      border-radius: 18px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.4rem 0 0.8rem;
+      border-left: 3px solid #bcc5d2;
+    }
+
+    .faq-mini {
+      margin-top: 1.2rem;
+    }
+
+    .faq-q {
+      font-weight: 480;
+      color: #1f2a3c;
+      margin: 1rem 0 0.2rem;
+    }
+
+    .faq-a {
+      padding-left: 1rem;
+      border-left: 2px solid #dde1e8;
+      color: #3a4659;
+      font-size: 0.97rem;
+    }
+
+    .inline-link {
+      color: #2a4b7c;
+      text-decoration: none;
+      border-bottom: 1px solid #cdd6e2;
+      transition: border-color 0.1s, color 0.1s;
+    }
+
+    .inline-link:hover {
+      border-bottom-color: #2a4b7c;
+      color: #1b3a63;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e2e6ed;
+      margin: 2rem 0 0.2rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6d788a;
+      padding: 1.5rem 0 0.5rem;
+      border-top: 1px solid #e4e8ef;
+      margin-top: 1.8rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1.2rem 0.9rem;
+      }
+      .hero-note {
+        padding: 1.8rem 1.2rem;
+      }
+      .hero-note h1 {
+        font-size: 1.7rem;
+      }
+      .card {
+        padding: 1.5rem 1.2rem;
+      }
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-note .opening-line {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- hero 开幕短句 -->
+  <div class="hero-note">
+    <h1>日常查询·对照·延伸</h1>
+    <div class="opening-line">翻开一个查询页面，像是推开一扇安静的侧门。</div>
+    <div class="sub">不需要每次都重新搭建环境，也不需要把参数记在纸片上。</div>
+  </div>
+
+  <!-- 承接段落：日常里的 pg 模拟器 -->
+  <div class="card">
+    <h2>从一次查询开始</h2>
+    <p>
+      很多时候，打开一个模拟页面只是为了确认一条规则、一组数值，或是验证某个场景下的反馈是否符合预期。<a href="https://main-pg-simulator.com" class="inline-link">pg模拟器</a> 
+      就放在书签栏的某个位置，不张扬，但每次需要查照时，它总是干净地等在那里。
+    </p>
+    <p>
+      不用刻意记忆界面细节，也不用反复翻看截图。把注意力放在你需要对照的事情上——模拟器的意义不是替代判断，而是让判断之前的那一步变得轻快些。
+    </p>
+  </div>
+
+  <!-- 特点列表 (纯文字, 温和) -->
+  <div class="card">
+    <h2>几个让人觉得稳妥的特点</h2>
+    <ul class="feature-list">
+      <li><strong>参数直接可调</strong> —— 没有多层菜单，核心数值就在手边，改完就能看见反馈。</li>
+      <li><strong>界面平实克制</strong> —— 没有闪烁的动效或过度装饰，信息层级清晰，眼睛不容易疲劳。</li>
+      <li><strong>响应快，不拖沓</strong> —— 每次调整几乎实时刷新，连续对比时感受不到停滞。</li>
+      <li><strong>方便多窗对照</strong> —— 可以同时打开几个标签页，分别设置不同条件，来回切换没有负担。</li>
+      <li><strong>适合碎片化使用</strong> —— 不用登录，不用安装，打开即用，适合在零碎时间里完成一次快速验证。</li>
+    </ul>
+  </div>
+
+  <!-- 场景：日常对照 (双卡片) -->
+  <div class="card">
+    <h2>日常中最常出现的三个场景</h2>
+    <div class="scenario-grid">
+      <div class="scenario-item">
+        <strong>· 参数回查</strong>
+        <span>临下班前想起某个数值范围拿不准，打开 <a href="https://main-pg-simulator.com" class="inline-link">pg模拟器</a> 拉一遍，截图备忘。</span>
+      </div>
+      <div class="scenario-item">
+        <strong>· 方案对比</strong>
+        <span>A 方案和 B 方案只在某一行配置上有差异，并排两个窗口，逐项对照输出。</span>
+      </div>
+      <div class="scenario-item">
+        <strong>· 延伸阅读</strong>
+        <span>看到一篇讨论帖里提到的参数组合，随手输进去看看实际效果，验证自己的想法。</span>
+      </div>
+      <div class="scenario-item">
+        <strong>· 回顾与备忘</strong>
+        <span>每次版本更新后，花几分钟把改动后的表现过一遍，形成自己的对照笔记。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提示 + FAQ 摘要 (混合) -->
+  <div class="card">
+    <h2>几则小提示与常见疑问</h2>
+    <div class="tip-block">
+      <strong style="display:block; margin-bottom:0.2rem;">💡 提示</strong>
+      如果同时打开多个标签页做对照，建议给每个标签重命名（在浏览器标签上右键重命名），这样切换时不会混淆。
+    </div>
+    <div class="faq-mini">
+      <div class="faq-q">— 每次调整后需要手动刷新吗？</div>
+      <div class="faq-a">不需要。大多数参数改动后，模拟界面会同步更新。偶尔需要重绘的场景也有明确提示。</div>
+      <div class="faq-q">— 可以在手机浏览器上使用吗？</div>
+      <div class="faq-a">可以，布局会自动适配小屏幕，但部分密集参数建议在平板或桌面端操作，体验更顺畅。</div>
+      <div class="faq-q">— 会不会保存我输入的数据？</div>
+      <div class="faq-a">模拟器本身不主动保存任何输入，所有状态仅在当前会话中保留。关闭标签页后数据即清除。</div>
+    </div>
+  </div>
+
+  <!-- 温和结尾 -->
+  <div class="card" style="background:#fbfdff; border-color:#dce1e9;">
+    <p style="font-size:1.05rem; margin-bottom:0.2rem;">
+      工具终究是工具，真正有价值的，是使用工具时你心里的那个问题。
+    </p>
+    <p style="color:#3b4a5e;">
+      希望每次打开 <a href="https://main-pg-simulator.com" class="inline-link">pg模拟器</a> 的时候，你都能少一些「刚才那个值是多少」的犹豫，多一些「试试看」的从容。
+    </p>
+  </div>
+
+  <hr>
+  <div class="footer-note">
+    整理于日常 · 示例页面 &nbsp;·&nbsp; 仅供介绍参考
+  </div>
+
+</div>
+</body>
+</html>
